@@ -1,13 +1,20 @@
 import { Request, Response } from "express";
 import sendResponse from "../../shared/sendResponse";
 import { prisma } from "../../../config/db";
+import * as bcrypt from "bcryptjs";
+import config from "../../../config";
 
 const createUser = async (req: Request, res: Response) => {
-  
+  const hashedPassword: string = await bcrypt.hash(
+    req.body.password,
+    Number(config.salt_round)
+  );
 
-  const userData = req.body;
-
-  
+  const userData = {
+    name: req.body.name,
+    email: req.body.email,
+    password: hashedPassword,
+  };
 
   try {
     const result = await prisma.user.create({
