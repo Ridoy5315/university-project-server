@@ -1,10 +1,10 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import sendResponse from "../../shared/sendResponse";
 import { prisma } from "../../../config/db";
 import * as bcrypt from "bcryptjs";
 import config from "../../../config";
 
-const createUser = async (req: Request, res: Response) => {
+const createUser = async (req: Request, res: Response, next: NextFunction) => {
   const hashedPassword: string = await bcrypt.hash(
     req.body.password,
     Number(config.salt_round)
@@ -33,12 +33,7 @@ const createUser = async (req: Request, res: Response) => {
       data: result,
     });
   } catch (error) {
-    sendResponse(res, {
-      statusCode: 400,
-      success: false,
-      message: "Something went wrong",
-      data: error,
-    });
+    next(error);
   }
 };
 

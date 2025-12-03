@@ -23,6 +23,7 @@
     "cors": "^2.8.5",
     "express": "^5.1.0",
     "http": "^0.0.1-security",
+    "http-status": "^2.1.0",
     "prisma": "^6.18.0",
     "ts-node-dev": "^2.0.0",
     "zod": "^4.1.13"

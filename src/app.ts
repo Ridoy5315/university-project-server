@@ -2,6 +2,7 @@ import compression from "compression";
 import cors from "cors";
 import express from "express";
 import router from "./app/routes";
+import globalErrorHandler from "./app/middlewares/globalErrorHandler";
 
 const app = express();
 
@@ -23,6 +24,8 @@ app.use("/api", router)
 app.get("/", (_req, res) => {
   res.send("University Project is running");
 });
+
+app.use(globalErrorHandler);
 
 
 // 404 Handler
