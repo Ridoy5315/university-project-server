@@ -1,6 +1,7 @@
 import compression from "compression";
 import cors from "cors";
 import express from "express";
+import router from "./app/routes";
 
 const app = express();
 
@@ -16,9 +17,11 @@ app.use(
   })
 );
 
+app.use("/api", router)
+
 // Default route for testing
 app.get("/", (_req, res) => {
-  res.send("API is running");
+  res.send("University Project is running");
 });
 
 
