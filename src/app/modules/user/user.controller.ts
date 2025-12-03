@@ -19,6 +19,11 @@ const createUser = async (req: Request, res: Response) => {
   try {
     const result = await prisma.user.create({
       data: userData,
+      select: {
+        id: true,
+        name: true,
+        email: true,
+      },
     });
 
     sendResponse(res, {
