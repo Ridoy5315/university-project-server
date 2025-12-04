@@ -3,4 +3,5 @@ model user {
   email    String   @unique
   password String
   name     String
+  
 }
