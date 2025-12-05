@@ -11,6 +11,10 @@ router.post(
   "/create-user", validateRequest(createUser) ,UserController.createUser
 );
 
+router.get(
+  "/password-suggestion", UserController.getAISuggestion
+);
+
 
 
 export const userRoutes = router;
