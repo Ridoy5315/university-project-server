@@ -3,10 +3,12 @@ import cors from "cors";
 import express from "express";
 import router from "./app/routes";
 import globalErrorHandler from "./app/middlewares/globalErrorHandler";
+import cookieParser from 'cookie-parser';
 
 const app = express();
 
 // Middleware
+app.use(cookieParser());
 app.use(cors()); // Enables Cross-Origin Resource Sharing
 app.use(compression()); // Compresses response bodies for faster delivery
 app.use(express.json()); // Parse incoming JSON requests
