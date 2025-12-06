@@ -3,6 +3,7 @@ import app from "./app";
 import dotenv from "dotenv";
 import { prisma } from "./config/db";
 import config from "./config";
+import { connectRedis } from "./config/redis.config";
 
 dotenv.config();
 
@@ -11,7 +12,7 @@ let server: Server | null = null;
 async function connectToDB() {
   try {
     await prisma.$connect();
-    console.log("*** DB Connection successfully")
+    console.log("*** DB Connection successfully");
   } catch (error) {
     console.log("*** DB connection failed.");
     process.exit(1);
@@ -57,6 +58,11 @@ async function gracefulShutdown(signal: string) {
   }
 }
 
+(async () => {
+  await connectRedis();
+  await startServer();
+})();
+
 /**
  * Handle system signals and unexpected errors.
  */
@@ -76,4 +82,3 @@ function handleProcessEvents() {
 }
 
 // Start the application
-startServer();

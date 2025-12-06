@@ -1,9 +1,5 @@
 
 
-
-
-
-
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { TErrorSources, TGenericErrorResponse } from "../interfaces/error.types";
 
@@ -30,19 +26,6 @@ export const handleZodError = (err: any):  TGenericErrorResponse => {
 export const prismaP2002Error = (err: any):  TGenericErrorResponse => {
      const errorSources : TErrorSources[] = [];
 
-     // if(err.code === 'P2002'){
-     //      errorSources.push({
-     //           path: err.meta.target,
-     //           message: "Duplicate Key error"
-     //      })
-     // }
-
-     // return {
-     //      statusCode: 400,
-     //      message: "Duplicate Key error",
-     //      errorSources
-     // }
-
      const duplicatedField = Array.isArray(err.meta?.target)
     ? err.meta.target.join(", ")
     : err.meta?.target || "unknown";
@@ -55,6 +38,25 @@ export const prismaP2002Error = (err: any):  TGenericErrorResponse => {
   return {
     statusCode: 400,
     message: "Duplicate Key Error",
+    errorSources,
+  };
+}
+
+export const prismaP2025Error = (err: any):  TGenericErrorResponse => {
+     const errorSources : TErrorSources[] = [];
+
+     const noRecordData = Array.isArray(err.meta?.modelName)
+    ? err.meta.modelName.join(", ")
+    : err.meta?.modelName || "unknown";
+
+  errorSources.push({
+    path: noRecordData,
+    message: `No account found with this ${noRecordData}`,
+  });
+
+  return {
+    statusCode: 400,
+    message: "No account found",
     errorSources,
   };
 }

@@ -4,7 +4,7 @@ import { TErrorSources } from "../interfaces/error.types";
 import { Prisma } from "@prisma/client";
 import { handleZodError } from "../helpers/handleZodError";
 import config from "../../config";
-import { prismaP2002Error } from "../helpers/prismaClientError";
+import { prismaP2002Error, prismaP2025Error } from "../helpers/prismaClientError";
 
 const sanitizeError = (error: any) => {
   // Don't expose Prisma errors in production
@@ -39,9 +39,14 @@ const globalErrorHandler = (
     message = simplifiedError.message;
     errorSources = simplifiedError.errorSources as TErrorSources[];
   } else if (err instanceof Prisma.PrismaClientKnownRequestError) {
-     console.log("REAL ERROR:", err);
     if (err.code === "P2002") {
       const simplifiedError = prismaP2002Error(err);
+      statusCode = simplifiedError.statusCode;
+      message = simplifiedError.message;
+      errorSources = simplifiedError.errorSources as TErrorSources[];
+    }
+    else if (err.code === "P2025") {
+      const simplifiedError = prismaP2025Error(err);
       statusCode = simplifiedError.statusCode;
       message = simplifiedError.message;
       errorSources = simplifiedError.errorSources as TErrorSources[];
