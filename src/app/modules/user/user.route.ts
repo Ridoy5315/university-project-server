@@ -12,6 +12,10 @@ router.post(
 );
 
 router.get(
+  "/me" ,UserController.getUser
+);
+
+router.get(
   "/password-suggestion", UserController.getAISuggestion
 );
 

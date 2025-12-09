@@ -59,6 +59,7 @@ const sendOTP = async (email: string, name: string) => {
 const verifyOTP = async (email: string, otp: string) => {
      
   let user;
+
   try {
     user = await prisma.user.findUniqueOrThrow({
       where: { email },

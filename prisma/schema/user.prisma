@@ -1,7 +1,34 @@
-model user {
-  id         String   @id @default(uuid())
-  email      String   @unique
-  password   String
-  name       String
-  isVerified Boolean  @default(false)
+model User {
+  id          String        @id @default(uuid())
+  email       String        @unique
+  password    String
+  name        String
+  isVerified  Boolean       @default(false)
+  credentials Credential[]
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt @default(now())
+
+  @@map("user")
+}
+
+model Credential {
+  id             String    @id @default(uuid())
+  email          String    @unique
+  user           User     @relation(fields: [email], references: [email])
+
+  // Basic info
+  label          String        // e.g. "Personal Gmail", "Work GitHub"
+  siteName       String        // e.g. "Gmail", "GitHub"
+  url            String?       // e.g. "https://mail.google.com"
+
+  // Login info
+  username       String        // email / username used to log in
+  password       String        //  hashed password (NEVER plain text)
+
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  @@unique([email, siteName, username])
+
+  @@map("credentials")
 }

@@ -1,9 +1,12 @@
+import httpStatus from "http-status";
 import { NextFunction, Request, Response } from "express";
 import sendResponse from "../../shared/sendResponse";
 import { prisma } from "../../../config/db";
 import * as bcrypt from "bcryptjs";
 import config from "../../../config";
 import { askOpenRouter } from "../../helpers/open-router";
+import { jwtHelpers } from "../../helpers/jwtHelpers";
+import { Secret } from "jsonwebtoken";
 
 const createUser = async (req: Request, res: Response, next: NextFunction) => {
   const hashedPassword: string = await bcrypt.hash(
@@ -38,7 +41,11 @@ const createUser = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-const getAISuggestion = async (req: Request, res: Response, next: NextFunction) => {
+const getAISuggestion = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const userName = req.query.name || "";
 
@@ -62,25 +69,59 @@ const getAISuggestion = async (req: Request, res: Response, next: NextFunction) 
 
     const response = await askOpenRouter([{ role: "user", content: prompt }]);
     const cleanedJson = response
-    .replace(/```(?:json)?\s*/, "") // remove ``` or ```json
-    .replace(/```$/, "") // remove ending ```
-    .trim();
+      .replace(/```(?:json)?\s*/, "") // remove ``` or ```json
+      .replace(/```$/, "") // remove ending ```
+      .trim();
 
     const json = JSON.parse(cleanedJson);
-
-    console.log(json)
 
     res.json({
       success: true,
       password: json.password,
     });
-
   } catch (error) {
-    next(error)
+    next(error);
+  }
+};
+
+const getUser = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const user = req.cookies;
+
+    console.log(user)
+
+    const accessToken = user.accessToken;
+    const decodedData = jwtHelpers.verifyToken(
+      accessToken,
+      config.jwt.jwt_access_token_secret as Secret
+    );
+    console.log(decodedData);
+    const result = await prisma.user.findUniqueOrThrow({
+      where: {
+        email: decodedData.email,
+      },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+      },
+    });
+
+    console.log(result)
+
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: "User retrieved successfully",
+      data: result,
+    });
+  } catch (error) {
+    next(error);
   }
 };
 
 export const UserController = {
   createUser,
-  getAISuggestion
+  getAISuggestion,
+  getUser
 };
