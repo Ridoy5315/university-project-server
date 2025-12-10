@@ -11,6 +11,10 @@ router.post(
   "/add", validateRequest(createCredentialSchema), CredentialsController.addCredential
 );
 
+router.get(
+  "/userCredentials",  CredentialsController.getUserCredentials
+);
+
 
 
 export const credentialRoutes = router;

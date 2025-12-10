@@ -19,6 +19,24 @@ const addCredential = async (req: Request, res: Response, next: NextFunction) =>
   }
 };
 
+const getUserCredentials = async (req: Request, res: Response, next: NextFunction) => {
+
+  const userEmail = req.query.email;
+
+  try {
+    const result = await CredentialsServices.getUserCredentials(userEmail as string);
+    sendResponse(res, {
+        statusCode: httpStatus.OK,
+        success: true,
+        message: "User credentials retrieve successfully!",
+        data: result
+    })
+  } catch (error) {
+    next(error);
+  }
+};
+
 export const CredentialsController = {
-     addCredential
+     addCredential,
+     getUserCredentials
 };

@@ -26,5 +26,6 @@ export default {
     smtp_user: process.env.SMTP_USER,
     smtp_pass: process.env.SMTP_PASS,
     smtp_from: process.env.SMTP_FROM,
-  }
+  },
+  encryption_key: process.env.ENCRYPTION_KEY,
 };
