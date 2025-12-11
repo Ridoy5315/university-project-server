@@ -1,7 +1,7 @@
 import express from 'express';
 import { CredentialsController } from './credental.controller';
 import { validateRequest } from '../../middlewares/validateRequest';
-import { createCredentialSchema } from './credentials.validation';
+import { createCredentialSchema, updateCredentialSchema } from './credentials.validation';
 
 
 
@@ -14,6 +14,8 @@ router.post(
 router.get(
   "/userCredentials",  CredentialsController.getUserCredentials
 );
+
+router.patch("/:id", validateRequest(updateCredentialSchema), CredentialsController.updateUserCredential)
 
 
 

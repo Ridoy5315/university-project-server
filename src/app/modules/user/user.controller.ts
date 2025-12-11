@@ -88,14 +88,12 @@ const getUser = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const user = req.cookies;
 
-    console.log(user)
-
     const accessToken = user.accessToken;
     const decodedData = jwtHelpers.verifyToken(
       accessToken,
       config.jwt.jwt_access_token_secret as Secret
     );
-    console.log(decodedData);
+
     const result = await prisma.user.findUniqueOrThrow({
       where: {
         email: decodedData.email,
@@ -106,8 +104,6 @@ const getUser = async (req: Request, res: Response, next: NextFunction) => {
         email: true,
       },
     });
-
-    console.log(result)
 
     sendResponse(res, {
       statusCode: httpStatus.OK,

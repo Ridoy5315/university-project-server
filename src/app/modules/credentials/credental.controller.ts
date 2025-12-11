@@ -36,7 +36,25 @@ const getUserCredentials = async (req: Request, res: Response, next: NextFunctio
   }
 };
 
+const updateUserCredential = async (req: Request, res: Response, next: NextFunction) => {
+
+  const credentialId = req.params.id;
+
+  try {
+    const result = await CredentialsServices.updateUserCredential(credentialId as string, req.body);
+    sendResponse(res, {
+        statusCode: httpStatus.OK,
+        success: true,
+        message: "User credential data updated!",
+        data: result
+    })
+  } catch (error) {
+    next(error);
+  }
+};
+
 export const CredentialsController = {
      addCredential,
-     getUserCredentials
+     getUserCredentials,
+     updateUserCredential
 };
